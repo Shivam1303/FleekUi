@@ -1,17 +1,16 @@
 {
-    "compilerOptions": {
-      "target": "es5",
-      "lib": ["dom", "es2017"],
-      "module": "commonjs",
-      "jsx": "react",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "declaration": true,
-      "outDir": "dist",
-      "rootDir": "src"
-    },
-    "include": ["packages/*/src"]
-  }
-  
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "es2017"],
+    "module": "commonjs",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "packages" // Change this to "packages"
+  },
+  "include": ["packages/*/src/**/*"] // Change this to include all files in subdirectories
+}

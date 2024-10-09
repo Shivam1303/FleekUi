@@ -76,7 +76,7 @@ EOT
   # Initialize source directory and index.ts
   mkdir -p src
   echo "// Common components" > src/index.ts
-
+  echo "import '../../styles.css';" >> src/index.ts
   echo "Common package has been created in $COMMON_PATH"
 fi
 
@@ -105,5 +105,6 @@ EOT
 
 # Update index.ts to export the new component
 echo "export { default as $COMPONENT_NAME } from './$COMPONENT_NAME';" >> "$COMMON_PATH/src/index.ts"
+
 
 echo "Common component $COMPONENT_NAME has been created in $COMMON_PATH"

@@ -101,6 +101,7 @@ EOT
 
 # Create an index file for exporting the component
 cat <<EOT > src/index.ts
+import '../../styles.css';
 export { default as $COMPONENT_NAME } from './$COMPONENT_NAME';
 EOT
 
