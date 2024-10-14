@@ -1,6 +1,8 @@
 # Creating a New Component
 
-To create a new component, use the following command: `./create-component.sh MyNewComponent`.
+To create a new component, 
+permission: `chmod +x create-common-componenet.sh`,
+use the following command: `./create-component.sh MyNewComponent`.
 
 To build the new component, run: `lerna run build`.
 
@@ -10,7 +12,9 @@ To publish all components, use: `npx lerna publish`
 
 # Creating a Common Component
 
-To create a new common component, use: `./create-common-component.sh Button`.
+To create a new common component, 
+permission: `chmod +x create-common-componenet.sh`,
+use: `./create-common-component.sh Button`.
 
 ## Build and Publish Only Common Package
 
