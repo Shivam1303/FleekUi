@@ -29,7 +29,7 @@ npm install react react-dom
 npm install --save-dev typescript @types/react @types/react-dom
 
 # Add common components as a dependency
-npm install @my-scope/common
+npm install @fleek/common
 
 # Create TypeScript configuration for the component
 cat <<EOT > tsconfig.json
@@ -81,7 +81,7 @@ EOT
 # Create basic React component files
 cat <<EOT > src/$COMPONENT_NAME.tsx
 import React from 'react';
-import { Button } from '@my-scope/common'; // Example of using a common component
+import { Button } from '@fleek/common'; // Changed from @my-scope/common
 
 interface ${COMPONENT_NAME}Props {
   label: string;
@@ -106,6 +106,6 @@ export { default as $COMPONENT_NAME } from './$COMPONENT_NAME';
 EOT
 
 # Update the package.json with the component's main entry point and scope
-jq '.main = "dist/index.js" | .name = "@my-scope/'"$COMPONENT_NAME"'" package.json > tmp.json && mv tmp.json package.json
+jq '.main = "dist/index.js" | .name = "@fleek/'"$COMPONENT_NAME"'" package.json > tmp.json && mv tmp.json package.json
 
 echo "Component $COMPONENT_NAME has been created in $COMPONENT_PATH"
