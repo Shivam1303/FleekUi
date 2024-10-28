@@ -18,9 +18,12 @@ then
   echo "Creating a common package..."
   mkdir -p "$COMMON_PATH/src"
 
-  # Initialize npm package
+  # Initialize npm package with scope
   cd "$COMMON_PATH" || exit
   npm init -y
+  
+  # Update package.json with @fleek scope using sed
+  sed -i 's/"name": "common"/"name": "@fleek\/common"/' package.json
 
   # Install React and TypeScript
   npm install react react-dom
