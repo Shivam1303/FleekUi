@@ -3,9 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 interface InfiniteScrollProps<T> {
   items: T[];
   renderItem: (item: T, index: number) => React.ReactNode;
-  loadMore: () => Promise<void>;
-  hasMore: boolean;
-  loading?: boolean;
+  fetchItems: (page: number) => Promise<T[]>;
+  itemsPerPage?: number;
   className?: string;
   loadingComponent?: React.ReactNode;
   endMessage?: React.ReactNode;
@@ -14,34 +13,52 @@ interface InfiniteScrollProps<T> {
 }
 
 const InfiniteScroll = <T,>({
-  items,
+  items: initialItems,
   renderItem,
-  loadMore,
-  hasMore,
-  loading = false,
+  fetchItems,
+  itemsPerPage = 10,
   className = '',
   loadingComponent = <div className='text-center py-4'>Loading...</div>,
   endMessage = <div className='text-center py-4'>No more items to load</div>,
   threshold = 100,
   containerHeight = '600px',
 }: InfiniteScrollProps<T>): React.ReactElement => {
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [items, setItems] = useState<T[]>(initialItems);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const loadMore = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const newItems = await fetchItems(page);
+
+      if (newItems.length < itemsPerPage) {
+        setHasMore(false);
+      }
+
+      setItems((prevItems) => [...prevItems, ...newItems]);
+      setPage((prev) => prev + 1);
+    } catch (error) {
+      console.error('Error loading items:', error);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleScroll = async () => {
-    if (!containerRef.current || isLoadingMore || !hasMore || loading) return;
+    if (!containerRef.current || loading || !hasMore) return;
 
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
     const scrolledToThreshold =
       scrollHeight - scrollTop - clientHeight <= threshold;
 
     if (scrolledToThreshold) {
-      setIsLoadingMore(true);
-      try {
-        await loadMore();
-      } finally {
-        setIsLoadingMore(false);
-      }
+      await loadMore();
     }
   };
 
@@ -56,7 +73,7 @@ const InfiniteScroll = <T,>({
         currentContainer.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [hasMore, isLoadingMore, loading]);
+  }, [hasMore, loading]);
 
   return (
     <div
@@ -70,7 +87,7 @@ const InfiniteScroll = <T,>({
         ))}
       </div>
 
-      {(loading || isLoadingMore) && loadingComponent}
+      {loading && loadingComponent}
       {!hasMore && !loading && endMessage}
     </div>
   );
