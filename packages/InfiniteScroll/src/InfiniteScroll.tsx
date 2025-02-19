@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 interface InfiniteScrollProps<T> {
   items: T[];
   renderItem: (item: T, index: number) => React.ReactNode;
-  fetchItems: (page: number) => Promise<T[]>;
   itemsPerPage?: number;
   className?: string;
   loadingComponent?: React.ReactNode;
@@ -13,9 +12,8 @@ interface InfiniteScrollProps<T> {
 }
 
 const InfiniteScroll = <T,>({
-  items: initialItems,
+  items: allItems,
   renderItem,
-  fetchItems,
   itemsPerPage = 10,
   className = '',
   loadingComponent = <div className='text-center py-4'>Loading...</div>,
@@ -23,28 +21,27 @@ const InfiniteScroll = <T,>({
   threshold = 100,
   containerHeight = '600px',
 }: InfiniteScrollProps<T>): React.ReactElement => {
-  const [items, setItems] = useState<T[]>(initialItems);
+  const [displayedItems, setDisplayedItems] = useState<T[]>(
+    allItems.slice(0, itemsPerPage),
+  );
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(allItems.length > itemsPerPage);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const loadMore = async () => {
+  const loadMore = () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
     try {
-      const newItems = await fetchItems(page);
+      const nextItems = allItems.slice(0, (page + 1) * itemsPerPage);
 
-      if (newItems.length < itemsPerPage) {
+      if (nextItems.length >= allItems.length) {
         setHasMore(false);
       }
 
-      setItems((prevItems) => [...prevItems, ...newItems]);
+      setDisplayedItems(nextItems);
       setPage((prev) => prev + 1);
-    } catch (error) {
-      console.error('Error loading items:', error);
-      setHasMore(false);
     } finally {
       setLoading(false);
     }
@@ -82,7 +79,7 @@ const InfiniteScroll = <T,>({
       style={{ height: containerHeight }}
     >
       <div className='space-y-4'>
-        {items.map((item, index) => (
+        {displayedItems.map((item, index) => (
           <div key={index}>{renderItem(item, index)}</div>
         ))}
       </div>
