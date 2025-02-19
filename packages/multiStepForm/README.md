@@ -1,8 +1,6 @@
 # MultiStepForm Usage Example
 
-## Example Integration
-
-To use the `MultiStepForm` component in your React project, follow this example:
+To use the `MultiStepForm` component in your React project, follow this example: 
 
 ```tsx
 import React from "react";
@@ -45,4 +43,6 @@ const App: React.FC = () => {
 };
 
 export default App;
-
+```
+Like this anyone can use multistep form as an wrapper and create as many steps as needed.
+Thank you!
