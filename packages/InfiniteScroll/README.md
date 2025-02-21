@@ -13,14 +13,14 @@ A React component that implements infinite scrolling functionality for large lis
 ## Installation
 
 ```bash
-npm install @sliderzz/fleek-infinitescroll
+npm install @sliderzz/fleek-infinite-scroll
 ```
 
 ## Usage
 
 ```tsx
 // Example usage
-import { InfiniteScroll } from '@/packages/InfiniteScroll';
+import { InfiniteScroll } from '@sliderzz/fleek-infinite-scroll';
 
 interface User {
   id: number;

@@ -24,30 +24,28 @@ const InfiniteScroll = <T,>({
   const [displayedItems, setDisplayedItems] = useState<T[]>(
     allItems.slice(0, itemsPerPage),
   );
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(allItems.length > itemsPerPage);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const loadMore = () => {
     if (loading || !hasMore) return;
-
     setLoading(true);
     try {
-      const nextItems = allItems.slice(0, (page + 1) * itemsPerPage);
-
-      if (nextItems.length >= allItems.length) {
-        setHasMore(false);
-      }
-
-      setDisplayedItems(nextItems);
-      setPage((prev) => prev + 1);
+      const nextPage = page + 1;
+      const startIndex = nextPage * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, allItems.length);
+      const nextItems = allItems.slice(startIndex, endIndex);
+      setDisplayedItems(prev => [...prev, ...nextItems]);
+      setPage(nextPage);
+      setHasMore(endIndex < allItems.length);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleScroll = async () => {
+  const handleScroll = () => {
     if (!containerRef.current || loading || !hasMore) return;
 
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -55,7 +53,7 @@ const InfiniteScroll = <T,>({
       scrollHeight - scrollTop - clientHeight <= threshold;
 
     if (scrolledToThreshold) {
-      await loadMore();
+      loadMore();
     }
   };
 
@@ -70,7 +68,7 @@ const InfiniteScroll = <T,>({
         currentContainer.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [hasMore, loading]);
+  }, [page]);
 
   return (
     <div
