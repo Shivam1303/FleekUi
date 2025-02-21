@@ -1,6 +1,6 @@
 # InfiniteScroll Component
 
-A React component that implements infinite scrolling functionality for large lists of data with client-side pagination.
+A React component that implements infinite scrolling functionality for large lists of data with client-side pagination handling.
 
 ## Features
 
@@ -95,7 +95,7 @@ const UserList = () => {
 
 - Consider the size of your data array as all items are stored in memory
 - Use appropriate `itemsPerPage` values to balance smooth scrolling and performance
-- Implement virtualization for extremely large lists (10,000+ items)
+- Implement virtualization for extremely large lists (10,000+ items).
 
 ## Browser Support
 
