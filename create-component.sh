@@ -20,78 +20,66 @@ fi
 
 mkdir -p "$COMPONENT_PATH/src"
 
-# Initialize a new npm package for the component
-cd "$COMPONENT_PATH" || exit
-npm init -y
-
-# Add dependencies for React and TypeScript
-npm install react react-dom
-npm install --save-dev typescript @types/react @types/react-dom
-
-# Add common components as a dependency
-npm install @fleek/common
-
-# Create TypeScript configuration for the component
-cat <<EOT > tsconfig.json
+# Initialize package.json with correct configuration
+cat <<EOT > "$COMPONENT_PATH/package.json"
 {
-  "extends": "../../tsconfig.json",
+  "name": "@sliderzz/fleek-$COMPONENT_NAME",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "typescript": "^5.7.3"
+  }
+}
+EOT
+
+# Create TypeScript configuration
+cat <<EOT > "$COMPONENT_PATH/tsconfig.json"
+{
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "declaration": true,
+    "declarationDir": "dist",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES6",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true
   },
   "include": ["src/**/*"],
-  "exclude": ["dist"]
+  "exclude": ["node_modules", "dist"]
 }
 EOT
 
-# Create Webpack configuration for the component
-cat <<EOT > webpack.config.js
-const path = require('path');
-
-module.exports = {
-  entry: './src/index.ts',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
-    libraryTarget: 'umd',
-    globalObject: 'this',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'ts-loader',
-        },
-      },
-    ],
-  },
-  externals: {
-    react: 'react',
-    'react-dom': 'react-dom',
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
-  },
-  mode: 'production',
-};
-EOT
-
-# Create basic React component files
-cat <<EOT > src/$COMPONENT_NAME.tsx
+# Create component file
+cat <<EOT > "$COMPONENT_PATH/src/$COMPONENT_NAME.tsx"
 import React from 'react';
-import { Button } from '@fleek/common'; // Changed from @my-scope/common
 
 interface ${COMPONENT_NAME}Props {
-  label: string;
+  // Add your props here
 }
 
-const $COMPONENT_NAME: React.FC<${COMPONENT_NAME}Props> = ({ label }) => {
+const $COMPONENT_NAME: React.FC<${COMPONENT_NAME}Props> = (props) => {
   return (
     <div>
-      <Button label="Common Button" />
-      {label}
+      {/* Add your component content here */}
     </div>
   );
 };
@@ -99,13 +87,42 @@ const $COMPONENT_NAME: React.FC<${COMPONENT_NAME}Props> = ({ label }) => {
 export default $COMPONENT_NAME;
 EOT
 
-# Create an index file for exporting the component
-cat <<EOT > src/index.ts
-import '../../styles.css';
+# Create index file
+cat <<EOT > "$COMPONENT_PATH/src/index.ts"
 export { default as $COMPONENT_NAME } from './$COMPONENT_NAME';
 EOT
 
-# Update the package.json with the component's main entry point and scope
-jq '.main = "dist/index.js" | .name = "@fleek/'"$COMPONENT_NAME"'" package.json > tmp.json && mv tmp.json package.json
+# Create README.md
+cat <<EOT > "$COMPONENT_PATH/README.md"
+# $COMPONENT_NAME Component
+
+## Installation
+
+\`\`\`bash
+npm install @sliderzz/fleek-$COMPONENT_NAME
+\`\`\`
+
+## Usage
+
+\`\`\`tsx
+import { $COMPONENT_NAME } from '@sliderzz/fleek-$COMPONENT_NAME';
+
+const YourComponent = () => {
+  return (
+    <$COMPONENT_NAME />
+  );
+};
+\`\`\`
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+|      |      |         |             |
+
+## Examples
+
+Add usage examples here.
+EOT
 
 echo "Component $COMPONENT_NAME has been created in $COMPONENT_PATH"
