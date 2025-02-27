@@ -100,3 +100,6 @@ export default App;
 | body | function | Custom template for cell content |
 | style | object | Inline styles for the column |
 | width | string | Column width |
+
+
+Try it out!!!
