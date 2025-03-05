@@ -102,4 +102,4 @@ export default App;
 | width | string | Column width |
 
 
-Try it out!!!
+Try it out!
