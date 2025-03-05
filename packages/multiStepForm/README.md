@@ -45,4 +45,4 @@ const App: React.FC = () => {
 export default App;
 ```
 Like this anyone can use multistep form as an wrapper and create as many steps as needed.
-Thank you!
+Try it out, Thank you!
