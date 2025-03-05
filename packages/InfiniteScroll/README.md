@@ -104,3 +104,5 @@ Works in all modern browsers that support:
 - IntersectionObserver API
 - CSS Flexbox
 - Modern JavaScript features
+
+Try it out!
