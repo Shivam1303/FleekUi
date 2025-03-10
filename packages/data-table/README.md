@@ -101,5 +101,3 @@ export default App;
 | style | object | Inline styles for the column |
 | width | string | Column width |
 
-
-Try it out!
